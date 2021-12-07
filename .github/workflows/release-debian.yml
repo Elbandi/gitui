@@ -127,7 +127,6 @@ jobs:
             apt-get update
             apt-get -y upgrade
             apt-get -y install devscripts dpkg-dev debhelper equivs
-        # debian missing rustc > 1.50, we install it from ubuntu
             if [ "${{ matrix.distro }}" == "debian"]; then
               apt-get -y install binutils gcc libc-dev wget
               DARCH=$(dpkg --print-architecture)
