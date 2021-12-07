@@ -40,6 +40,15 @@ jobs:
           apt-get update
           apt-get -y upgrade
           apt-get -y install devscripts dpkg-dev debhelper equivs
+      - name: Install rustc
+        # debian missing rustc > 1.50, we install it from ubuntu
+        if: matrix.distro == 'debian'
+        run: |
+          apt-get -y install binutils gcc libc-dev wget
+          wget http://security.ubuntu.com/ubuntu/pool/universe/r/rustc/rustc_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb
+          wget http://security.ubuntu.com/ubuntu/pool/universe/r/rustc/libstd-rust-dev_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb
+          wget http://security.ubuntu.com/ubuntu/pool/universe/r/rustc/libstd-rust-1.53_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb
+          dpkg -i rustc_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb libstd-rust-dev_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb libstd-rust-1.53_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb
       - name: Build package
         run: |
           mk-build-deps -i -r -t 'apt-get -f -y --no-install-recommends --force-yes'
@@ -64,14 +73,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro: "debian"
-            release: "buster"
-            image: "buster"
-            arch: "armv7"
-          - distro: "debian"
-            release: "buster"
-            image: "buster"
-            arch: "aarch64"
           - distro: "debian"
             release: "bullseye"
             image: "bullseye"
@@ -126,6 +127,15 @@ jobs:
             apt-get update
             apt-get -y upgrade
             apt-get -y install devscripts dpkg-dev debhelper equivs
+        # debian missing rustc > 1.50, we install it from ubuntu
+            if [ "${{ matrix.distro }}" == "debian"]; then
+              apt-get -y install binutils gcc libc-dev wget
+              DARCH=$(dpkg --print-architecture)
+              wget http://ports.ubuntu.com/pool/universe/r/rustc/rustc_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb
+              wget http://ports.ubuntu.com/pool/universe/r/rustc/libstd-rust-dev_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb
+              wget http://ports.ubuntu.com/pool/universe/r/rustc/libstd-rust-1.50_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb
+              dpkg -i rustc_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb libstd-rust-dev_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb libstd-rust-1.50_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb
+            fi
           run: |
             mkdir -p /build
             cp -r ${GITHUB_WORKSPACE} /build/package
