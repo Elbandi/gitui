@@ -16,6 +16,7 @@ jobs:
     environment:
       name: "release"
     strategy:
+      fail-fast: false
       matrix:
         include:
           - distro: "debian"
@@ -44,10 +45,9 @@ jobs:
         # debian missing rustc > 1.50, we install it from ubuntu
         if: matrix.distro == 'debian'
         run: |
-          apt-get -y install binutils gcc libc-dev wget
-          wget http://security.ubuntu.com/ubuntu/pool/universe/r/rustc/rustc_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb
-          wget http://security.ubuntu.com/ubuntu/pool/universe/r/rustc/libstd-rust-dev_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb
-          wget http://security.ubuntu.com/ubuntu/pool/universe/r/rustc/libstd-rust-1.53_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb
+          curl -sSLO http://security.ubuntu.com/ubuntu/pool/universe/r/rustc/rustc_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb
+          curl -sSLO http://security.ubuntu.com/ubuntu/pool/universe/r/rustc/libstd-rust-dev_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb
+          curl -sSLO http://security.ubuntu.com/ubuntu/pool/universe/r/rustc/libstd-rust-1.53_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb
           dpkg -i rustc_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb libstd-rust-dev_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb libstd-rust-1.53_1.53.0+dfsg1+llvm-4ubuntu1~18.04.1_amd64.deb
       - name: Build package
         run: |
@@ -128,11 +128,10 @@ jobs:
             apt-get -y upgrade
             apt-get -y install devscripts dpkg-dev debhelper equivs
             if [ "${{ matrix.distro }}" == "debian"]; then
-              apt-get -y install binutils gcc libc-dev wget
               DARCH=$(dpkg --print-architecture)
-              wget http://ports.ubuntu.com/pool/universe/r/rustc/rustc_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb
-              wget http://ports.ubuntu.com/pool/universe/r/rustc/libstd-rust-dev_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb
-              wget http://ports.ubuntu.com/pool/universe/r/rustc/libstd-rust-1.50_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb
+              curl -sSLO http://ports.ubuntu.com/pool/universe/r/rustc/rustc_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb
+              curl -sSLO http://ports.ubuntu.com/pool/universe/r/rustc/libstd-rust-dev_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb
+              curl -sSLO http://ports.ubuntu.com/pool/universe/r/rustc/libstd-rust-1.50_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb
               dpkg -i rustc_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb libstd-rust-dev_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb libstd-rust-1.50_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb
             fi
           run: |
