@@ -1,3 +1,5 @@
+cargo-features = ["resolver"]
+
 [package]
 name = "gitui"
 version = "0.18.0"
