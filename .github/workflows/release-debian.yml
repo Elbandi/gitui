@@ -8,6 +8,8 @@ on:
 
 env:
   DEBIAN_FRONTEND: noninteractive
+# https://github.com/rust-lang/cargo/issues/9919
+  CARGO_HTTP_MULTIPLEXING: false
 
 jobs:
   debian-package-amd64:
