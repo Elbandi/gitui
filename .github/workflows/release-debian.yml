@@ -127,6 +127,8 @@ jobs:
             apt-get update
             apt-get -y upgrade
             apt-get -y install devscripts dpkg-dev debhelper equivs
+            mkdir ~/.cargo
+            echo "[net] git-fetch-with-cli = true" > ~/.cargo/config
             if [ "${{ matrix.distro }}" == "debian"]; then
               DARCH=$(dpkg --print-architecture)
               curl -sSLO http://ports.ubuntu.com/pool/universe/r/rustc/rustc_1.50.0+dfsg1+llvm-0ubuntu5_$DARCH.deb
